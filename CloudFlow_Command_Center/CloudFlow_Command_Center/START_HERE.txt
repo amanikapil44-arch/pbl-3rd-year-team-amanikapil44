@@ -1,0 +1,28 @@
+CLOUDFLOW 2.0 - COMMAND CENTER
+==============================
+
+EASIEST WAY TO RUN ON WINDOWS
+1. Extract the ZIP completely (right-click > Extract All).
+2. Open this extracted folder. You should see app.py and run_cloudflow.bat here.
+3. Double-click run_cloudflow.bat.
+4. Wait for: Running on http://127.0.0.1:5000
+5. Open Edge/Chrome and visit http://127.0.0.1:5000
+6. Create an account or sign in.
+
+IMPORTANT
+- Keep the black command window open while using the website.
+- To stop the app, click the command window and press Ctrl+C.
+- The first run creates .venv and installs Flask. Internet is required for first-time installation.
+- The SQLite database cloudflow.db is created automatically beside app.py.
+- To preserve an older CloudFlow database, copy your existing cloudflow.db into this folder BEFORE the first run. Keep a backup first.
+- The app uses a simulated scheduler. It does not execute user-entered shell commands.
+
+PROJECT CONTENTS
+- app.py, scheduler.py: Flask application and scheduler
+- static/: redesigned dark command-center frontend
+- requirements.txt: Windows/local runtime dependencies
+- requirements-dev.txt: runtime + pytest
+- requirements-prod.txt and Dockerfile: production container dependencies
+- tests/: API tests
+
+If Windows SmartScreen asks, choose More info > Run anyway only if you trust the downloaded project. Do not run unknown files from untrusted sources.
