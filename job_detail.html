@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Job Detail{% endblock %}
+{% block content %}
+{% if not job %}
+  <h1>Job not found</h1><p><a href="{{ url_for('jobs') }}">Back to jobs</a></p>
+{% else %}
+<h1>Job #{{ job.id }} — {{ job.name }}</h1>
+<div id="live">
+  <section class="card">
+    <p><span class="badge s-{{ job.status|lower }}">{{ job.status }}</span>
+      {% if job.progress is not none %} {{ job.progress }}% complete{% endif %}</p>
+    {% if job.description %}<p>{{ job.description }}</p>{% endif %}
+    <table>
+      <tr><th>Submitted by</th><td>{{ job.username }}</td><th>Priority</th><td>{{ job.priority }}</td></tr>
+      <tr><th>CPU</th><td>{{ job.cpu_required }} cores</td><th>RAM</th><td>{{ job.ram_required }} GB</td></tr>
+      <tr><th>GPU</th><td>{{ job.gpu_required }} units</td><th>Storage</th><td>{{ job.storage_required }} GB</td></tr>
+      <tr><th>Burst time</th><td>{{ job.burst_time }}s</td><th>Worker</th><td>{{ job.worker_name or '—' }}</td></tr>
+      <tr><th>Submitted</th><td>{{ job.submitted_at|ts }}</td><th>Queued</th><td>{{ job.queued_at|ts }}</td></tr>
+      <tr><th>Started</th><td>{{ job.started_at|ts }}</td><th>Finished</th><td>{{ job.completed_at|ts }}</td></tr>
+      <tr><th>Waiting time</th><td>{{ job.waiting_time if job.waiting_time is not none else '—' }}{% if job.waiting_time is not none %}s{% endif %}</td>
+          <th>Failure reason</th><td>{{ job.failure_reason or '—' }}</td></tr>
+    </table>
+    {% if job.status == 'Running' %}
+    <form method="post" action="{{ url_for('fail_job', job_id=job.id) }}" class="inline">
+      <button class="btn danger" type="submit">Simulate worker failure</button></form>
+    {% endif %}
+  </section>
+  <section class="card">
+    <h2>Resource allocations</h2>
+    {% if allocations %}
+    <table><tr><th>Worker</th><th>CPU</th><th>RAM</th><th>GPU</th><th>Storage</th><th>Allocated</th><th>Released</th></tr>
+      {% for a in allocations %}<tr><td>{{ a.worker_name }}</td><td>{{ a.cpu }}</td><td>{{ a.ram }}</td><td>{{ a.gpu }}</td><td>{{ a.storage }}</td>
+        <td>{{ a.allocated_at|ts }}</td><td>{{ a.released_at|ts if a.released_at else 'still held' }}</td></tr>{% endfor %}
+    </table>
+    {% else %}<p class="muted">No resources allocated yet.</p>{% endif %}
+  </section>
+  <section class="card">
+    <h2>Execution log</h2>
+    <table><tr><th>Time</th><th>Event</th><th>Details</th></tr>
+      {% for l in logs %}<tr><td>{{ l.logged_at|ts }}</td><td>{{ l.event }}</td><td>{{ l.details }}</td></tr>{% endfor %}
+    </table>
+  </section>
+</div>
+{% endif %}
+{% endblock %}

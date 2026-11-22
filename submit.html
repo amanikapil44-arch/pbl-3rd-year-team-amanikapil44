@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Submit Job{% endblock %}
+{% block content %}
+<h1>Submit a Job</h1>
+<p class="muted">Worker capacity limits: CPU {{ capacity.CPU }} cores · RAM {{ capacity.RAM }} GB · GPU {{ capacity.GPU }} units · Storage {{ capacity.STORAGE }} GB.
+Priority: 1 (lowest) to 10 (highest). Burst time is in simulated seconds.</p>
+<form method="post" class="card form" novalidate>
+  {% macro field(name, label, type='text', hint='') %}
+    <div class="field {% if errors.get(name) %}has-error{% endif %}">
+      <label for="{{ name }}">{{ label }}</label>
+      <input id="{{ name }}" name="{{ name }}" type="{{ type }}" value="{{ form.get(name, '') }}">
+      {% if hint %}<small>{{ hint }}</small>{% endif %}
+      {% if errors.get(name) %}<div class="error">{{ errors[name] }}</div>{% endif %}
+    </div>
+  {% endmacro %}
+  {{ field('username', 'Submitted by (username)') }}
+  {{ field('name', 'Job name') }}
+  <div class="field {% if errors.get('description') %}has-error{% endif %}">
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="2">{{ form.get('description', '') }}</textarea>
+    {% if errors.get('description') %}<div class="error">{{ errors['description'] }}</div>{% endif %}
+  </div>
+  <div class="grid two">
+    {{ field('priority', 'Priority (1–10)', 'number') }}
+    {{ field('burst_time', 'Estimated burst time (s)', 'number') }}
+    {{ field('cpu_required', 'CPU (cores)', 'number') }}
+    {{ field('ram_required', 'RAM (GB)', 'number') }}
+    {{ field('storage_required', 'Storage (GB)', 'number') }}
+    {{ field('gpu_required', 'GPU (units, optional)', 'number') }}
+  </div>
+  <button class="btn primary" type="submit">Submit Job</button>
+</form>
+{% endblock %}

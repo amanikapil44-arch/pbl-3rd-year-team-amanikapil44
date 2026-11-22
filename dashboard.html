@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>System Dashboard</h1>
+
+<section class="card controls">
+  <form method="post" action="{{ url_for('set_algorithm') }}" class="inline">
+    <label for="algorithm"><strong>Scheduling algorithm:</strong></label>
+    <select name="algorithm" id="algorithm">
+      {% for key, a in algorithms.items() %}
+        <option value="{{ key }}" {% if key == current_algorithm %}selected{% endif %}>{{ key }} — {{ a.label }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn" type="submit">Apply</button>
+  </form>
+  <form method="post" action="{{ url_for('run_scheduler') }}" class="inline">
+    <button class="btn primary" type="submit">▶ Run Scheduler Cycle</button>
+  </form>
+  <form method="post" action="{{ url_for('reset') }}" class="inline" onsubmit="return confirm('Delete ALL jobs and reset resources?');">
+    <button class="btn danger" type="submit">Reset demo data</button>
+  </form>
+</section>
+
+<div id="live">
+  <section class="grid cards">
+    <div class="stat"><span>{{ stats.total }}</span>Total jobs</div>
+    <div class="stat s-pending"><span>{{ stats.counts.Pending }}</span>Pending</div>
+    <div class="stat s-queued"><span>{{ stats.counts.Queued }}</span>Queued</div>
+    <div class="stat s-running"><span>{{ stats.counts.Running }}</span>Running</div>
+    <div class="stat s-completed"><span>{{ stats.counts.Completed }}</span>Completed</div>
+    <div class="stat s-failed"><span>{{ stats.counts.Failed }}</span>Failed</div>
+  </section>
+
+  <section class="card">
+    <h2>Active algorithm: {{ stats.algorithm }} <small>{{ stats.algorithm_info.label }}</small></h2>
+    <p class="muted">{{ stats.algorithm_info.description }} Complexity: {{ stats.algorithm_info.complexity }}.</p>
+  </section>
+
+  <section class="card">
+    <h2>Simulated resource utilization</h2>
+    {% for t in ['CPU','RAM','GPU','STORAGE'] %}
+      {% set u = stats.utilization[t] %}
+      <div class="bar-row">
+        <div class="bar-label">{{ t }} — {{ u.used }} / {{ u.total }} {{ u.unit }} used ({{ u.percent }}%)</div>
+        <div class="bar"><div class="fill {% if u.percent >= 80 %}hot{% endif %}" style="width: {{ u.percent }}%"></div></div>
+      </div>
+    {% endfor %}
+    {% if stats.consistency_problems %}
+      <p class="flash error">Consistency problems: {{ stats.consistency_problems|join('; ') }}</p>
+    {% else %}
+      <p class="muted">✔ Consistency check passed (resource counters match active allocations).</p>
+    {% endif %}
+  </section>
+
+  <section class="card">
+    <h2>Worker nodes</h2>
+    <table>
+      <tr><th>Worker</th><th>Status</th><th>CPU free</th><th>RAM free</th><th>GPU free</th><th>Storage free</th><th>Running jobs</th></tr>
+      {% for w in stats.workers %}
+      <tr><td>{{ w.name }}</td><td>{{ w.status }}</td>
+        <td>{{ w.resources.CPU.available }}/{{ w.resources.CPU.total }}</td>
+        <td>{{ w.resources.RAM.available }}/{{ w.resources.RAM.total }}</td>
+        <td>{{ w.resources.GPU.available }}/{{ w.resources.GPU.total }}</td>
+        <td>{{ w.resources.STORAGE.available }}/{{ w.resources.STORAGE.total }}</td>
+        <td>{{ w.running_jobs }}</td></tr>
+      {% endfor %}
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Ready queue — next dispatch order ({{ stats.algorithm }})</h2>
+    {% if stats.ready_queue %}
+    <table>
+      <tr><th>#</th><th>Job</th><th>Status</th><th>Priority</th><th>CPU</th><th>RAM</th><th>GPU</th><th>Storage</th><th>Burst</th></tr>
+      {% for j in stats.ready_queue %}
+      <tr><td>{{ loop.index }}</td><td><a href="{{ url_for('job_detail', job_id=j.id) }}">#{{ j.id }} {{ j.name }}</a></td>
+        <td><span class="badge s-{{ j.status|lower }}">{{ j.status }}</span></td>
+        <td>{{ j.priority }}</td><td>{{ j.cpu_required }}</td><td>{{ j.ram_required }}</td>
+        <td>{{ j.gpu_required }}</td><td>{{ j.storage_required }}</td><td>{{ j.burst_time }}</td></tr>
+      {% endfor %}
+    </table>
+    {% else %}<p class="muted">No jobs waiting.</p>{% endif %}
+  </section>
+
+  <section class="card">
+    <h2>Recent activity</h2>
+    {% if stats.recent_logs %}
+    <table>
+      <tr><th>Time</th><th>Job</th><th>Event</th><th>Details</th></tr>
+      {% for l in stats.recent_logs %}
+      <tr><td>{{ l.logged_at|ts }}</td><td><a href="{{ url_for('job_detail', job_id=l.job_id) }}">#{{ l.job_id }} {{ l.job_name }}</a></td>
+        <td>{{ l.event }}</td><td>{{ l.details }}</td></tr>
+      {% endfor %}
+    </table>
+    {% else %}<p class="muted">No activity yet — submit a job.</p>{% endif %}
+  </section>
+</div>
+{% endblock %}

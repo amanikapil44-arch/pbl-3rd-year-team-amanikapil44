@@ -1,0 +1,41 @@
+:root { --bg:#f4f6fb; --card:#fff; --ink:#1f2937; --muted:#6b7280; --primary:#2563eb; --line:#e5e7eb; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: "Segoe UI", system-ui, sans-serif; background:var(--bg); color:var(--ink); }
+.nav { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.5rem; background:#111827; color:#fff; padding:.7rem 1.2rem; }
+.brand { font-weight:600; font-size:1.1rem; }
+.tag { background:var(--primary); border-radius:999px; padding:.1rem .6rem; font-size:.75rem; margin-left:.4rem; }
+.nav nav { display:flex; flex-wrap:wrap; gap:1rem; align-items:center; }
+.nav a { color:#d1d5db; text-decoration:none; } .nav a:hover { color:#fff; }
+.auto { color:#fbbf24; font-size:.9rem; cursor:pointer; }
+.container { max-width:1100px; margin:1.2rem auto; padding:0 1rem; }
+h1 { margin:.2rem 0 1rem; } h2 { margin:0 0 .6rem; font-size:1.1rem; } h2 small { color:var(--muted); font-weight:400; margin-left:.5rem; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:1rem 1.2rem; margin-bottom:1rem; }
+.scroll { overflow-x:auto; }
+.muted { color:var(--muted); font-size:.92rem; }
+.grid { display:grid; gap:1rem; } .cards { grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); margin-bottom:1rem; }
+.two { grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); }
+.stat { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:.8rem 1rem; color:var(--muted); font-size:.9rem; }
+.stat span { display:block; font-size:2rem; font-weight:700; color:var(--ink); }
+table { width:100%; border-collapse:collapse; font-size:.9rem; }
+th, td { text-align:left; padding:.45rem .5rem; border-bottom:1px solid var(--line); vertical-align:top; }
+th { color:var(--muted); font-weight:600; }
+.badge { padding:.15rem .6rem; border-radius:999px; font-size:.78rem; font-weight:600; background:#e5e7eb; }
+.badge.s-pending { background:#fef3c7; color:#92400e; } .badge.s-queued { background:#dbeafe; color:#1e40af; }
+.badge.s-running { background:#d1fae5; color:#065f46; } .badge.s-completed { background:#bbf7d0; color:#14532d; }
+.badge.s-failed { background:#fecaca; color:#991b1b; }
+.stat.s-running span { color:#059669; } .stat.s-failed span { color:#dc2626; } .stat.s-completed span { color:#15803d; }
+.bar-row { margin:.5rem 0; } .bar-label { font-size:.88rem; margin-bottom:.2rem; }
+.bar { background:#e5e7eb; border-radius:6px; height:14px; overflow:hidden; } .bar.small { height:6px; margin-top:4px; width:90px; }
+.fill { background:var(--primary); height:100%; transition:width .4s; } .fill.hot { background:#dc2626; }
+.btn { border:1px solid var(--line); background:#fff; padding:.45rem .9rem; border-radius:8px; cursor:pointer; font-size:.9rem; }
+.btn.primary { background:var(--primary); color:#fff; border-color:var(--primary); } .btn.danger { color:#b91c1c; border-color:#fca5a5; }
+.controls { display:flex; flex-wrap:wrap; gap:1rem; align-items:center; } .inline { display:inline-flex; gap:.5rem; align-items:center; margin:0; }
+select, input, textarea { padding:.45rem .6rem; border:1px solid #cbd5e1; border-radius:8px; font:inherit; width:100%; }
+select { width:auto; }
+.field { margin-bottom:.9rem; } .field label { display:block; font-weight:600; margin-bottom:.25rem; } .field small { color:var(--muted); }
+.field.has-error input, .field.has-error textarea { border-color:#dc2626; } .error { color:#dc2626; font-size:.85rem; margin-top:.2rem; }
+.flash { padding:.7rem 1rem; border-radius:8px; margin-bottom:1rem; border:1px solid; }
+.flash.success { background:#ecfdf5; border-color:#6ee7b7; } .flash.info { background:#eff6ff; border-color:#93c5fd; }
+.flash.warning { background:#fffbeb; border-color:#fcd34d; } .flash.error { background:#fef2f2; border-color:#fca5a5; }
+.filters { display:flex; flex-wrap:wrap; gap:.5rem; align-items:center; margin-bottom:.8rem; } .filters a { padding:.25rem .8rem; border-radius:999px; background:#e5e7eb; color:var(--ink); text-decoration:none; font-size:.88rem; }
+.filters a.active { background:var(--primary); color:#fff; } .right { margin-left:auto; }

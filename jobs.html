@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Jobs{% endblock %}
+{% block content %}
+<h1>Jobs</h1>
+<div class="filters">
+  <a href="{{ url_for('jobs') }}" class="{% if not status %}active{% endif %}">All</a>
+  {% for s in statuses %}<a href="{{ url_for('jobs', status=s) }}" class="{% if status == s %}active{% endif %}">{{ s }}</a>{% endfor %}
+  <form method="post" action="{{ url_for('run_scheduler') }}" class="inline right"><button class="btn primary">▶ Run Scheduler Cycle</button></form>
+</div>
+<div id="live" class="card scroll">
+  {% if jobs %}
+  <table>
+    <tr><th>ID</th><th>Name</th><th>User</th><th>Prio</th><th>CPU</th><th>RAM</th><th>GPU</th><th>Storage</th><th>Burst</th><th>Status</th><th>Worker</th><th>Submitted</th></tr>
+    {% for j in jobs %}
+    <tr>
+      <td><a href="{{ url_for('job_detail', job_id=j.id) }}">#{{ j.id }}</a></td>
+      <td>{{ j.name }}</td><td>{{ j.username }}</td><td>{{ j.priority }}</td>
+      <td>{{ j.cpu_required }}</td><td>{{ j.ram_required }}</td><td>{{ j.gpu_required }}</td>
+      <td>{{ j.storage_required }}</td><td>{{ j.burst_time }}s</td>
+      <td><span class="badge s-{{ j.status|lower }}">{{ j.status }}</span>
+        {% if j.progress is not none %}<div class="bar small"><div class="fill" style="width: {{ j.progress }}%"></div></div>{% endif %}</td>
+      <td>{{ j.worker_name or '—' }}</td><td>{{ j.submitted_at|ts }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="muted">No jobs found. <a href="{{ url_for('submit') }}">Submit one</a>.</p>{% endif %}
+</div>
+{% endblock %}
